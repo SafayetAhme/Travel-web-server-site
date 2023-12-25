@@ -13,7 +13,6 @@ app.use(cors());
 app.use(express.json());
 
 
-
 const uri = `mongodb+srv://${process.env.BD_USER}:${process.env.DB_PASS}@cluster0.jfiige1.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -32,6 +31,7 @@ async function run() {
 
 
         const menusCollection = client.db("Travel-website").collection("menus");
+        const blogsCollection = client.db("Travel-website").collection("blogs");
         const usersCollection = client.db("Travel-website").collection("users");
         const paymentCollection = client.db("Travel-website").collection("payments");
 
@@ -48,6 +48,12 @@ async function run() {
         app.get('/menus', async (req, res) => {
             const result = await menusCollection.find().toArray();
             res.send(result);
+        })
+
+        // blogs 
+        app.get('/blogs', async (req, res) => {
+            const result = await blogsCollection.find().toArray();
+            res.send(result)
         })
 
         // post menus item
@@ -121,6 +127,7 @@ async function run() {
             })
 
         }
+
         // users related api
         app.get('/users', verifyToken, async (req, res) => {
             const result = await usersCollection.find().toArray();
@@ -202,7 +209,6 @@ async function run() {
         });
 
 
-
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
@@ -212,8 +218,6 @@ async function run() {
     }
 }
 run().catch(console.dir);
-
-
 
 
 app.get('/', (req, res) => {
